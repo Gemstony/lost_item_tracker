@@ -42,5 +42,17 @@ class FoundItem {
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
+
+    public function getUnmatchedPending() {
+    $stmt = $this->pdo->query("
+        SELECT f.* FROM found_items f 
+        WHERE f.status = 'pending' 
+        AND NOT EXISTS (
+            SELECT 1 FROM matches m WHERE m.found_item_id = f.id AND m.status != 'rejected'
+        )
+        ORDER BY f.created_at ASC
+    ");
+    return $stmt->fetchAll();
+}
 }
 ?>

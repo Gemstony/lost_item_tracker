@@ -10,6 +10,12 @@ $pageTitle = $pageTitle ?? 'Digital Tracking & Reporting System';
 // Get user role from session (student, staff, admin)
 $userRole = $_SESSION['role'] ?? 'guest';
 $userName = $_SESSION['fullname'] ?? 'Guest';
+
+if (isLoggedIn()) {
+    require_once __DIR__ . '/../../models/Notification.php';
+    $notifModel = new NotificationModel($pdo);
+    $unreadCount = count($notifModel->getUnread($_SESSION['user_id']));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -172,6 +178,12 @@ $userName = $_SESSION['fullname'] ?? 'Guest';
                 <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary">
                     <i class="fas fa-bars"></i> <span>Toggle Menu</span>
                 </button>
+                <a href="<?= BASE_URL ?>index.php?page=matches/view" class="me-3 text-dark">
+                    <i class="fas fa-bell"></i>
+                    <?php if (isset($unreadCount) && $unreadCount > 0): ?>
+                        <span class="badge bg-danger"><?= $unreadCount ?></span>
+                    <?php endif; ?>
+                </a>
                 <div class="ms-auto">
                     <span class="navbar-text">
                         <i class="fas fa-user-circle"></i>

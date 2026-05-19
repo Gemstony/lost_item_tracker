@@ -62,9 +62,10 @@ switch ($page) {
         require_once __DIR__ . '/views/incidents/list.php';
         break;
     
+    case 'matches':
     case 'matches/view':
         if (!isLoggedIn()) redirect('login');
-        require_once __DIR__ . '/views/matches/my_matches.php';
+        require_once __DIR__ . '/controllers/MatchController.php';
         break;
     
     case 'admin/dashboard':

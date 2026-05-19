@@ -33,5 +33,17 @@ class LostItem {
         $stmt = $this->pdo->query("SELECT l.*, u.fullname, u.email FROM lost_items l JOIN users u ON l.user_id = u.id ORDER BY l.created_at DESC");
         return $stmt->fetchAll();
     }
+
+    public function getUnmatchedPending() {
+    $stmt = $this->pdo->query("
+        SELECT l.* FROM lost_items l 
+        WHERE l.status = 'pending' 
+        AND NOT EXISTS (
+            SELECT 1 FROM matches m WHERE m.lost_item_id = l.id AND m.status != 'rejected'
+        )
+        ORDER BY l.created_at ASC
+    ");
+    return $stmt->fetchAll();
+}
 }
 ?>
