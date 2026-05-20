@@ -223,6 +223,78 @@ switch ($page) {
         require_once __DIR__ . '/controllers/ReportController.php';
         break;
 
+    // User profile management
+    case 'profile':
+        if (!isLoggedIn())
+            redirect('login');
+
+        $action = $_GET['action'] ?? '';
+
+        // Update profile details
+        if ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $fullname = $_POST['fullname'];
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+            $userId = $_SESSION['user_id'];
+
+            // Check if email is already used by another user
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+            $stmt->execute([$email, $userId]);
+            if ($stmt->fetch()) {
+                $_SESSION['profile_error'] = "Email already in use by another account.";
+                redirect('index.php?page=profile');
+            }
+
+            $stmt = $pdo->prepare("UPDATE users SET fullname = ?, email = ?, phone = ? WHERE id = ?");
+            if ($stmt->execute([$fullname, $email, $phone, $userId])) {
+                $_SESSION['fullname'] = $fullname;
+                $_SESSION['email'] = $email;
+                $_SESSION['profile_success'] = "Profile updated successfully.";
+            } else {
+                $_SESSION['profile_error'] = "Update failed.";
+            }
+            redirect('index.php?page=profile');
+        }
+
+        // Change password
+        elseif ($action === 'changepassword' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $current = $_POST['current_password'];
+            $new = $_POST['new_password'];
+            $confirm = $_POST['confirm_password'];
+            $userId = $_SESSION['user_id'];
+
+            // Verify current password
+            $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $user = $stmt->fetch();
+
+            if (!password_verify($current, $user['password'])) {
+                $_SESSION['profile_error'] = "Current password is incorrect.";
+                redirect('index.php?page=profile');
+            }
+            if (strlen($new) < 6) {
+                $_SESSION['profile_error'] = "New password must be at least 6 characters.";
+                redirect('index.php?page=profile');
+            }
+            if ($new !== $confirm) {
+                $_SESSION['profile_error'] = "New passwords do not match.";
+                redirect('index.php?page=profile');
+            }
+
+            $hashed = password_hash($new, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+            if ($stmt->execute([$hashed, $userId])) {
+                $_SESSION['profile_success'] = "Password changed successfully.";
+            } else {
+                $_SESSION['profile_error'] = "Password change failed.";
+            }
+            redirect('index.php?page=profile');
+        }
+
+        // Show profile page
+        require_once __DIR__ . '/views/profile/index.php';
+        break;
+
     default:
         http_response_code(404);
         echo "<h1>404 - Page not found</h1>";

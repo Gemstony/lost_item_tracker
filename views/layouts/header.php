@@ -73,7 +73,8 @@ if (isLoggedIn()) {
         #sidebar .sidebar-footer {
             position: absolute;
             bottom: 0;
-            width: 100%;
+            min-width: 250px;
+            max-width: 250px;
             background: #0b5ed7;
         }
         #content {
@@ -158,6 +159,11 @@ if (isLoggedIn()) {
                         <i class="fas fa-handshake"></i> My Matches
                     </a>
                 </li>
+                <li>
+                    <a href="<?= BASE_URL ?>index.php?page=profile">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </a>
+                </li>
                 <?php if ($userRole === 'admin'): ?>
                     <hr class="bg-light">
                     <li><a href="<?= BASE_URL ?>index.php?page=admin/dashboard"><i class="fas fa-chart-line"></i> Admin Panel</a></li>
@@ -167,12 +173,10 @@ if (isLoggedIn()) {
             <?php else: ?>
                 <li><a href="<?= BASE_URL ?>index.php?page=login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
             <?php endif; ?>
+            <li class="mt-4"><a href="<?= BASE_URL ?>index.php?page=logout&action=logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+
         </ul>
-        <div class="sidebar-footer p-3 border-top border-light">
-            <a href="<?= BASE_URL ?>index.php?page=logout&action=logout" class="text-white text-decoration-none">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </div>
+
     </nav>
 
     <!-- Page Content -->

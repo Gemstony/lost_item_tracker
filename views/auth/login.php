@@ -61,6 +61,10 @@ unset($_SESSION['error']);
                 <div class="text-center mt-3">
                     <a href="index.php?page=register">Don't have an account? Register</a>
                 </div>
+
+                <div class="text-center mt-3">
+                    <a class="btn btn-secondary w-100" href="index.php?page=welcome">Back Home</a>
+                </div>
             </div>
             <div class="card-footer text-center text-muted">
                 &copy; <?= date('Y') ?> NIT - Tanzania
