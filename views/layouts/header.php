@@ -169,7 +169,7 @@ if (isLoggedIn()) {
             <?php endif; ?>
         </ul>
         <div class="sidebar-footer p-3 border-top border-light">
-            <a href="<?= BASE_URL ?>index.php?page=logout" class="text-white text-decoration-none">
+            <a href="<?= BASE_URL ?>index.php?page=logout&action=logout" class="text-white text-decoration-none">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </div>

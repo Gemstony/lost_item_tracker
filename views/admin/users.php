@@ -2,18 +2,8 @@
 $pageTitle = 'Manage Users';
 require_once __DIR__ . '/../layouts/header.php';
 
-// Handle delete user (if POST)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
-    $userId = $_POST['user_id'];
-    if ($userId != $_SESSION['user_id']) { // Prevent admin deleting self
-        $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
-        $stmt->execute([$userId]);
-        $_SESSION['success'] = "User deleted successfully.";
-    } else {
-        $_SESSION['error'] = "You cannot delete your own account.";
-    }
-    redirect('admin/users');
-}
+// Handle POST actions (add, edit, delete, role update) – these will be processed in index.php
+// For now, just display users and provide forms.
 
 // Fetch all users
 $stmt = $pdo->query("SELECT id, fullname, email, phone, role, created_at FROM users ORDER BY created_at DESC");
@@ -24,6 +14,9 @@ $users = $stmt->fetchAll();
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <h5><i class="fas fa-users"></i> All Users</h5>
+            <button type="button" class="btn btn-light btn-sm float-end" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <i class="fas fa-plus"></i> Add New User
+            </button>
         </div>
         <div class="card-body">
             <?php if (isset($_SESSION['success'])): ?>
@@ -58,20 +51,115 @@ $users = $stmt->fetchAll();
                                 <td><?= date('Y-m-d', strtotime($user['created_at'])) ?></td>
                                 <td>
                                     <?php if ($user['id'] != $_SESSION['user_id']): ?>
-                                        <form method="POST" onsubmit="return confirm('Delete this user? All their posts will be removed.')">
+                                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editUserModal<?= $user['id'] ?>">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <form method="POST" action="<?= BASE_URL ?>index.php?page=admin/users&action=delete" style="display:inline-block" onsubmit="return confirm('Delete this user? All their posts will be removed.')">
                                             <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                                            <input type="hidden" name="delete_user" value="1">
-                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Delete</button>
                                         </form>
                                     <?php else: ?>
                                         <span class="text-muted">Current</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
+                            
+                            <!-- Edit User Modal for each user -->
+                            <div class="modal fade" id="editUserModal<?= $user['id'] ?>" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-info text-white">
+                                            <h5>Edit User: <?= htmlspecialchars($user['fullname']) ?></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form method="POST" action="<?= BASE_URL ?>index.php?page=admin/users&action=edit">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                                                <div class="mb-2">
+                                                    <label>Full Name</label>
+                                                    <input type="text" name="fullname" class="form-control" value="<?= htmlspecialchars($user['fullname']) ?>" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label>Email</label>
+                                                    <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user['email']) ?>" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label>Phone</label>
+                                                    <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone']) ?>">
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label>Role</label>
+                                                    <select name="role" class="form-select">
+                                                        <option value="student" <?= $user['role']=='student'?'selected':'' ?>>Student</option>
+                                                        <option value="staff" <?= $user['role']=='staff'?'selected':'' ?>>Staff</option>
+                                                        <option value="admin" <?= $user['role']=='admin'?'selected':'' ?>>Admin</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label>New Password (leave blank to keep current)</label>
+                                                    <input type="password" name="password" class="form-control" placeholder="Enter only if changing">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5>Add New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="<?= BASE_URL ?>index.php?page=admin/users&action=add">
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label>Full Name *</label>
+                        <input type="text" name="fullname" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>Email *</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>Phone</label>
+                        <input type="text" name="phone" class="form-control">
+                    </div>
+                    <div class="mb-2">
+                        <label>Password *</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>Confirm Password *</label>
+                        <input type="password" name="confirm_password" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label>Role</label>
+                        <select name="role" class="form-select">
+                            <option value="student">Student</option>
+                            <option value="staff">Staff</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Add User</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -95,20 +95,125 @@ switch ($page) {
         require_once __DIR__ . '/views/admin/dashboard.php';
         break;
 
+    // Admin user management CRUD
     case 'admin/users':
         if (!isAdmin())
             redirect('dashboard');
-        // Handle role update
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['role'])) {
+
+        $action = $_GET['action'] ?? '';
+
+        // Add user
+        if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $fullname = $_POST['fullname'];
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+            $password = $_POST['password'];
+            $confirm = $_POST['confirm_password'];
+            $role = $_POST['role'];
+
+            if ($password !== $confirm) {
+                $_SESSION['error'] = "Passwords do not match";
+                redirect('index.php?page=admin/users');
+            }
+            if (strlen($password) < 6) {
+                $_SESSION['error'] = "Password must be at least 6 characters";
+                redirect('index.php?page=admin/users');
+            }
+            // Check if email exists
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            if ($stmt->fetch()) {
+                $_SESSION['error'] = "Email already exists";
+                redirect('index.php?page=admin/users');
+            }
+
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("INSERT INTO users (fullname, email, phone, password, role) VALUES (?, ?, ?, ?, ?)");
+            if ($stmt->execute([$fullname, $email, $phone, $hashed, $role])) {
+                $_SESSION['success'] = "User added successfully";
+            } else {
+                $_SESSION['error'] = "Failed to add user";
+            }
+            redirect('index.php?page=admin/users');
+        }
+
+        // Edit user
+        elseif ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId = $_POST['user_id'];
+            $fullname = $_POST['fullname'];
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+            $role = $_POST['role'];
+            $newPassword = $_POST['password'];
+
+            // Prevent editing own role to non-admin? We'll allow but caution.
+            if ($userId == $_SESSION['user_id'] && $role != 'admin') {
+                $_SESSION['error'] = "You cannot change your own admin role.";
+                redirect('index.php?page=admin/users');
+            }
+
+            $updates = "fullname = ?, email = ?, phone = ?, role = ?";
+            $params = [$fullname, $email, $phone, $role];
+
+            if (!empty($newPassword)) {
+                if (strlen($newPassword) < 6) {
+                    $_SESSION['error'] = "Password must be at least 6 characters";
+                    redirect('index.php?page=admin/users');
+                }
+                $updates .= ", password = ?";
+                $params[] = password_hash($newPassword, PASSWORD_DEFAULT);
+            }
+            $params[] = $userId;
+
+            $stmt = $pdo->prepare("UPDATE users SET $updates WHERE id = ?");
+            if ($stmt->execute($params)) {
+                $_SESSION['success'] = "User updated successfully";
+                // If editing own data, update session variables
+                if ($userId == $_SESSION['user_id']) {
+                    $_SESSION['fullname'] = $fullname;
+                    $_SESSION['email'] = $email;
+                    // Role change? If admin changes own role, might lock out – we don't allow changing own role above.
+                }
+            } else {
+                $_SESSION['error'] = "Update failed";
+            }
+            redirect('index.php?page=admin/users');
+        }
+
+        // Delete user
+        elseif ($action === 'delete' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId = $_POST['user_id'];
+            if ($userId == $_SESSION['user_id']) {
+                $_SESSION['error'] = "You cannot delete your own account";
+                redirect('index.php?page=admin/users');
+            }
+            $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
+            if ($stmt->execute([$userId])) {
+                $_SESSION['success'] = "User deleted";
+            } else {
+                $_SESSION['error'] = "Delete failed";
+            }
+            redirect('index.php?page=admin/users');
+        }
+
+        // Update role (inline dropdown)
+        elseif ($action === 'update_role' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $userId = $_POST['user_id'];
             $role = $_POST['role'];
-            if (in_array($role, ['student', 'staff', 'admin'])) {
-                $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
-                $stmt->execute([$role, $userId]);
-                $_SESSION['success'] = "User role updated.";
+            if ($userId == $_SESSION['user_id']) {
+                $_SESSION['error'] = "You cannot change your own role";
+                redirect('index.php?page=admin/users');
             }
-            redirect('admin/users');
+            $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
+            if ($stmt->execute([$role, $userId])) {
+                $_SESSION['success'] = "Role updated";
+            } else {
+                $_SESSION['error'] = "Update failed";
+            }
+            redirect('index.php?page=admin/users');
         }
+
+        // Default: show user list
         require_once __DIR__ . '/views/admin/users.php';
         break;
 
@@ -117,7 +222,7 @@ switch ($page) {
             redirect('dashboard');
         require_once __DIR__ . '/controllers/ReportController.php';
         break;
-    
+
     default:
         http_response_code(404);
         echo "<h1>404 - Page not found</h1>";

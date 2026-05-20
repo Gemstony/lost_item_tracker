@@ -17,7 +17,7 @@ $action = $_GET['action'] ?? 'view';
 if ($action === 'run') {
     // Only admin can run matching manually
     if (!isAdmin())
-        redirect('dashboard');
+        redirect('index.php?page=dashboard');
 
     $newMatches = 0;
     $lostItems = $lostModel->getUnmatchedPending();

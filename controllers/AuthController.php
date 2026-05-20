@@ -37,19 +37,19 @@ class AuthController
     public function logout()
     {
         session_destroy();
-        redirect('login');
+        redirect('index.php?page=login');
     }
 
     public function requireLogin()
     {
         if (!isLoggedIn())
-            redirect('login');
+            redirect('index.php?page=login');
     }
 
     public function requireAdmin()
     {
         if (!isAdmin())
-            redirect('dashboard');
+            redirect('index.php?page=dashboard');
     }
 }
 
@@ -64,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'] ?? '';
         if ($auth->login($email, $password)) {
             if ($_SESSION['role'] === 'admin') {
-                redirect('admin/dashboard');
+                redirect('index.php?page=admin/dashboard');
             } else {
-                redirect('dashboard');
+                redirect('index.php?page=dashboard');
             }
         } else {
             $_SESSION['error'] = "Invalid email or password";
-            redirect('login');
+            redirect('index.php?page=login');
         }
     } elseif ($action === 'register') {
         $fullname = $_POST['fullname'] ?? '';
@@ -81,18 +81,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($password !== $confirm) {
             $_SESSION['errors'] = ["Passwords do not match"];
-            redirect('register');
+            redirect('index.php?page=register');
         }
         if (strlen($password) < 6) {
             $_SESSION['errors'] = ["Password must be at least 6 characters"];
-            redirect('register');
+            redirect('index.php?page=register');
         }
         if ($auth->register($fullname, $email, $password, $phone)) {
             $_SESSION['success'] = "Registration successful. Please login.";
-            redirect('login');
+            redirect('index.php?page=login');
         } else {
             $_SESSION['errors'] = ["Registration failed. Email may already exist."];
-            redirect('register');
+            redirect('index.php?page=register');
         }
     }
 } else {
