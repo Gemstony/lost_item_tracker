@@ -149,6 +149,11 @@ if (isLoggedIn()) {
                     </a>
                 </li>
                 <li>
+                    <a href="<?= BASE_URL ?>index.php?page=incidents/list">
+                        <i class="fas fa-list"></i> View Incidents
+                    </a>
+                </li>
+                <li>
                     <a href="<?= BASE_URL ?>index.php?page=matches/view">
                         <i class="fas fa-handshake"></i> My Matches
                     </a>

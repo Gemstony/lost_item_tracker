@@ -1,8 +1,8 @@
 <?php
 $pageTitle = 'My Matches';
 require_once __DIR__ . '/../layouts/header.php';
-require_once __DIR__ . '/../models/Match.php';
-require_once __DIR__ . '/../models/Notification.php';
+require_once __DIR__ . '/../../models/Match.php';
+require_once __DIR__ . '/../../models/Notification.php';
 
 $matchModel = new MatchModel($pdo);
 $notifModel = new NotificationModel($pdo);
