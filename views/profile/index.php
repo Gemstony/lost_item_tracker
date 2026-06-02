@@ -12,7 +12,7 @@ $user = $stmt->fetch();
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-6 mx-auto">
+        <div class="col-md-12 mx-auto">
             <div class="card shadow">
                 <div class="card-header bg-info text-white">
                     <h5><i class="fas fa-user-edit"></i> Edit Profile</h5>

@@ -217,10 +217,30 @@ switch ($page) {
         require_once __DIR__ . '/views/admin/users.php';
         break;
 
-    case 'admin/reports':
+    // case 'admin/reports':
+    //     if (!isAdmin())
+    //         redirect('dashboard');
+    //     require_once __DIR__ . '/controllers/ReportController.php';
+    //     break;
+
+    // Admin PDF reports (global)
+    case 'admin/reports/pdf':
         if (!isAdmin())
             redirect('dashboard');
         require_once __DIR__ . '/controllers/ReportController.php';
+        break;
+
+    // User PDF reports (personal)
+    case 'user/reports/pdf':
+        if (!isLoggedIn())
+            redirect('login');
+        require_once __DIR__ . '/controllers/ReportController.php';
+        break;
+
+    case 'admin/reports':
+        if (!isAdmin())
+            redirect('dashboard');
+        require_once __DIR__ . '/views/admin/reports.php';
         break;
 
     // User profile management
