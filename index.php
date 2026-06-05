@@ -95,6 +95,24 @@ switch ($page) {
         require_once __DIR__ . '/views/admin/dashboard.php';
         break;
 
+    case 'admin/all_lost_items':
+        if (!isAdmin())
+            redirect('dashboard');
+        require_once __DIR__ . '/views/admin/all_lost_items.php';
+        break;
+
+    case 'admin/all_found_items':
+        if (!isAdmin())
+            redirect('dashboard');
+        require_once __DIR__ . '/views/admin/all_found_items.php';
+        break;
+
+    case 'admin/all_matches':
+        if (!isAdmin())
+            redirect('dashboard');
+        require_once __DIR__ . '/views/admin/all_matches.php';
+        break;
+
     // Admin user management CRUD
     case 'admin/users':
         if (!isAdmin())
@@ -244,7 +262,8 @@ switch ($page) {
         break;
 
     case 'lost_items/map':
-        if (!isLoggedIn()) redirect('login');
+        if (!isLoggedIn())
+            redirect('login');
         require_once __DIR__ . '/views/lost_items/map_view.php';
         break;
     // User profile management

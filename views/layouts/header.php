@@ -19,6 +19,7 @@ if (isLoggedIn()) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -56,10 +57,10 @@ if (isLoggedIn()) {
         #sidebar {
             min-width: 280px;
             max-width: 280px;
-background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+            background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
             color: #e9ecef;
             transition: all 0.3s ease;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             display: flex;
             flex-direction: column;
@@ -72,8 +73,8 @@ background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
         #sidebar .sidebar-header {
             padding: 1.5rem 1rem;
             text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.1);
         }
 
         #sidebar .sidebar-header h4 {
@@ -117,20 +118,20 @@ background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
         }
 
         #sidebar ul li a:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-left-color: #ffc107;
             color: white;
         }
 
         #sidebar ul li.active a {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             border-left-color: #ffc107;
             color: white;
         }
 
         #sidebar .sidebar-footer {
             padding: 1rem;
-            border-top: 1px solid rgba(255,255,255,0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
             text-align: center;
             margin-top: auto;
         }
@@ -155,8 +156,8 @@ background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
             border-radius: 16px;
             padding: 0.7rem 1.5rem;
             margin-bottom: 1.8rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .navbar .navbar-text {
@@ -189,7 +190,7 @@ background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
         .page-content .card {
             border-radius: 16px;
             border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             margin-bottom: 1.5rem;
         }
 
@@ -209,8 +210,8 @@ background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
             font-size: 0.85rem;
             color: #6c757d;
             margin-top: 2rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         /* Responsive */
@@ -218,12 +219,15 @@ background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
             #sidebar {
                 margin-left: -280px;
             }
+
             #sidebar.active {
                 margin-left: 0;
             }
+
             #content {
                 padding: 1rem;
             }
+
             .navbar .btn-outline-secondary span {
                 display: none;
             }
@@ -244,69 +248,90 @@ background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
         }
     </style>
 </head>
+
 <body>
-<div class="wrapper">
-    <!-- Sidebar -->
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h4><i class="fas fa-search"></i> Lost & Found</h4>
-            <small>Digital Tracking System</small>
-        </div>
-        <ul class="list-unstyled components">
-            <?php if ($userRole === 'admin' || $userRole === 'staff' || $userRole === 'student'): ?>
-                <?php if ($userRole === 'student' || $userRole === 'staff'): ?>
-                    <li><a href="<?= BASE_URL ?>index.php?page=dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="<?= BASE_URL ?>index.php?page=lost_items/report"><i class="fas fa-frown"></i> Report Lost Item</a></li>
-                    <li><a href="<?= BASE_URL ?>index.php?page=found_items/report"><i class="fas fa-smile"></i> Report Found Item</a></li>
-                    <li><a href="<?= BASE_URL ?>index.php?page=lost_items/list"><i class="fas fa-list"></i> View Lost Items</a></li>
-                    <li><a href="<?= BASE_URL ?>index.php?page=found_items/list"><i class="fas fa-map-marker-alt"></i> View Found Items</a></li>
-                    <li><a href="<?= BASE_URL ?>index.php?page=incidents/report"><i class="fas fa-exclamation-triangle"></i> Report Incident</a></li>
-                    <li><a href="<?= BASE_URL ?>index.php?page=matches/view"><i class="fas fa-handshake"></i> My Matches</a></li>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="fas fa-search"></i> Lost & Found</h4>
+                <small>Digital Tracking System</small>
+            </div>
+            <ul class="list-unstyled components">
+                <?php if ($userRole === 'admin' || $userRole === 'staff' || $userRole === 'student'): ?>
+                    <?php if ($userRole === 'student' || $userRole === 'staff'): ?>
+                        <li><a href="<?= BASE_URL ?>index.php?page=dashboard"><i class="fas fa-tachometer-alt"></i>
+                                Dashboard</a></li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=lost_items/report"><i class="fas fa-frown"></i> Report Lost
+                                Item</a></li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=found_items/report"><i class="fas fa-smile"></i> Report Found
+                                Item</a></li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=lost_items/list"><i class="fas fa-list"></i> View Lost
+                                Items</a></li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=found_items/list"><i class="fas fa-map-marker-alt"></i> View
+                                Found Items</a></li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=incidents/report"><i class="fas fa-exclamation-triangle"></i>
+                                Report Incident</a></li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=matches/view"><i class="fas fa-handshake"></i> My Matches</a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php if ($userRole === 'admin'): ?>
+                        <li><a href="<?= BASE_URL ?>index.php?page=admin/dashboard"><i class="fas fa-chart-line"></i> Admin
+                                Panel</a></li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=admin/all_lost_items"><i class="fas fa-frown"></i> All Lost
+                                Items</a></li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=admin/all_found_items"><i class="fas fa-smile"></i> All Found
+                                Items</a></li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=admin/all_matches"><i class="fas fa-handshake"></i> All
+                                Matches</a></li>
+                    <?php endif; ?>
+
+                    <li><a href="<?= BASE_URL ?>index.php?page=incidents/list"><i class="fas fa-list"></i> View
+                            Incidents</a></li>
+
+                    <?php if ($userRole === 'admin'): ?>
+                        <li><a href="<?= BASE_URL ?>index.php?page=admin/users"><i class="fas fa-users"></i> Manage Users</a>
+                        </li>
+                        <li><a href="<?= BASE_URL ?>index.php?page=admin/reports"><i class="fas fa-file-alt"></i> System
+                                Reports</a></li>
+                    <?php endif; ?>
+
+                    <li><a href="<?= BASE_URL ?>index.php?page=profile"><i class="fas fa-user-circle"></i> My Profile</a>
+                    </li>
+                <?php else: ?>
+                    <li><a href="<?= BASE_URL ?>index.php?page=login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
                 <?php endif; ?>
-
-                <?php if ($userRole === 'admin'): ?>
-                    <li><a href="<?= BASE_URL ?>index.php?page=admin/dashboard"><i class="fas fa-chart-line"></i> Admin Panel</a></li>
-                    <li><a href="<?= BASE_URL ?>index.php?page=admin/users"><i class="fas fa-users"></i> Manage Users</a></li>
-                <?php endif; ?>
-
-                <li><a href="<?= BASE_URL ?>index.php?page=incidents/list"><i class="fas fa-list"></i> View Incidents</a></li>
-
-                <?php if ($userRole === 'admin'): ?>
-                    <li><a href="<?= BASE_URL ?>index.php?page=admin/reports"><i class="fas fa-file-alt"></i> System Reports</a></li>
-                <?php endif; ?>
-                
-                <li><a href="<?= BASE_URL ?>index.php?page=profile"><i class="fas fa-user-circle"></i> My Profile</a></li>
-            <?php else: ?>
-                <li><a href="<?= BASE_URL ?>index.php?page=login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-            <?php endif; ?>
-        </ul>
-        <div class="sidebar-footer">
-            <a href="<?= BASE_URL ?>index.php?page=logout&action=logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
-        </div>
-    </nav>
-
-    <!-- Page Content -->
-    <div id="content">
-        <!-- Top Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
-            <div class="container-fluid">
-                <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary">
-                    <i class="fas fa-bars"></i> <span>Toggle Menu</span>
-                </button>
-                <div class="ms-auto d-flex align-items-center">
-                    <a href="<?= BASE_URL ?>index.php?page=matches/view" class="notification-bell" title="Notifications">
-                        <i class="fas fa-bell"></i>
-                        <?php if (isset($unreadCount) && $unreadCount > 0): ?>
-                            <span class="badge bg-danger badge-notify"><?= $unreadCount ?></span>
-                        <?php endif; ?>
-                    </a>
-                    <div class="navbar-text ms-3">
-                        <i class="fas fa-user-circle"></i> 
-                        <?= htmlspecialchars($userName) ?> (<?= ucfirst($userRole) ?>)
-                    </div>
-                </div>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="<?= BASE_URL ?>index.php?page=logout&action=logout"><i class="fas fa-sign-out-alt"></i>
+                    Logout</a>
             </div>
         </nav>
 
-        <!-- Main content starts here -->
-        <div class="page-content">
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary">
+                        <i class="fas fa-bars"></i> <span>Toggle Menu</span>
+                    </button>
+                    <div class="ms-auto d-flex align-items-center">
+                        <a href="<?= BASE_URL ?>index.php?page=matches/view" class="notification-bell"
+                            title="Notifications">
+                            <i class="fas fa-bell"></i>
+                            <?php if (isset($unreadCount) && $unreadCount > 0): ?>
+                                <span class="badge bg-danger badge-notify"><?= $unreadCount ?></span>
+                            <?php endif; ?>
+                        </a>
+                        <div class="navbar-text ms-3">
+                            <i class="fas fa-user-circle"></i>
+                            <?= htmlspecialchars($userName) ?> (<?= ucfirst($userRole) ?>)
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main content starts here -->
+            <div class="page-content">
