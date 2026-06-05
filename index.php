@@ -243,6 +243,10 @@ switch ($page) {
         require_once __DIR__ . '/views/admin/reports.php';
         break;
 
+    case 'lost_items/map':
+        if (!isLoggedIn()) redirect('login');
+        require_once __DIR__ . '/views/lost_items/map_view.php';
+        break;
     // User profile management
     case 'profile':
         if (!isLoggedIn())

@@ -56,7 +56,7 @@ if (isLoggedIn()) {
         #sidebar {
             min-width: 280px;
             max-width: 280px;
-            background: #0d6efd;
+background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
             color: #e9ecef;
             transition: all 0.3s ease;
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);

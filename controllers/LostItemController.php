@@ -8,6 +8,8 @@ $lostItemModel = new LostItem($pdo);
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = $_SESSION['user_id'];
+    $gpsLat = !empty($_POST['gps_latitude']) ? $_POST['gps_latitude'] : null;
+    $gpsLng = !empty($_POST['gps_longitude']) ? $_POST['gps_longitude'] : null;
     $data = [
         'item_name' => $_POST['item_name'],
         'description' => $_POST['description'],
@@ -15,23 +17,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'lost_location' => $_POST['lost_location'],
         'lost_date' => $_POST['lost_date']
     ];
-    
+
     // Handle image upload
     $imagePath = null;
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = __DIR__ . '/../uploads/lost_items/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-        
+        if (!is_dir($uploadDir))
+            mkdir($uploadDir, 0777, true);
+
         $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
         $filename = 'lost_' . time() . '_' . uniqid() . '.' . $ext;
         $destination = $uploadDir . $filename;
-        
+
         if (move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
             $imagePath = 'uploads/lost_items/' . $filename;
         }
     }
-    
-    if ($lostItemModel->create($userId, $data, $imagePath)) {
+
+    if ($lostItemModel->create($userId, $data, $imagePath, $gpsLat, $gpsLng)) {
         $_SESSION['success'] = "Lost item reported successfully.";
         redirect('index.php?page=lost_items/list');
     } else {

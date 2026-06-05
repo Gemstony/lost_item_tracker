@@ -67,4 +67,8 @@ if ($action === 'run') {
     
     redirect('index.php?page=admin/dashboard');
 }
+else {
+    // Show matches view
+    require_once __DIR__ . '/../views/matches/my_matches.php';
+}
 ?>

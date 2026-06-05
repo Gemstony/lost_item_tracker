@@ -1,49 +1,77 @@
 // assets/js/gps.js
-let currentLat = null;
-let currentLng = null;
+window.getCurrentLocation = function() {
+    console.log("getCurrentLocation called");
 
-function getCurrentLocation() {
+    // Try to find address field by ID first
+    var addressField = document.getElementById('lost_location') || document.getElementById('found_location');
+    
+    // If not found, try by name attribute
+    if (!addressField) {
+        addressField = document.querySelector('input[name="lost_location"], input[name="found_location"]');
+        console.log("Trying by name, found:", addressField);
+    }
+    
+    // If still not found, try any input with "location" in its id/name
+    if (!addressField) {
+        addressField = document.querySelector('input[id*="location"], input[name*="location"]');
+        console.log("Trying by partial match, found:", addressField);
+    }
+
+    console.log("Final address field:", addressField);
+
+    if (!addressField) {
+        var statusSpan = document.getElementById('locationStatus');
+        if (statusSpan) statusSpan.innerHTML = '<span class="text-danger">Error: Address field not found on page.</span>';
+        alert("Address field missing. Please check the page HTML.");
+        return;
+    }
+    
     if (!navigator.geolocation) {
         alert("Geolocation is not supported by your browser.");
         return;
     }
     
-    document.getElementById('locationStatus').innerHTML = '<div class="spinner-border spinner-border-sm" role="status"></div> Getting location...';
+    var statusSpan = document.getElementById('locationStatus');
+    if (statusSpan) statusSpan.innerHTML = '<div class="spinner-border spinner-border-sm"></div> Getting location...';
     
     navigator.geolocation.getCurrentPosition(
         function(position) {
-            currentLat = position.coords.latitude;
-            currentLng = position.coords.longitude;
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            console.log("Got coordinates:", lat, lng);
             
-            // Set hidden form fields
-            document.getElementById('gps_latitude').value = currentLat;
-            document.getElementById('gps_longitude').value = currentLng;
+            var latField = document.getElementById('gps_latitude');
+            var lngField = document.getElementById('gps_longitude');
+            if (latField) latField.value = lat;
+            if (lngField) lngField.value = lng;
             
-            // Update status display
-            document.getElementById('locationStatus').innerHTML = 
-                '<span class="text-success"><i class="fas fa-check-circle"></i> Location captured: ' + 
-                currentLat.toFixed(6) + ', ' + currentLng.toFixed(6) + '</span>';
+            if (statusSpan) statusSpan.innerHTML = '<span class="text-info">Getting address...</span>';
             
-            // Optionally reverse geocode to get address (using free API)
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${currentLat}&lon=${currentLng}&zoom=18&addressdetails=1`)
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.display_name) {
-                        document.getElementById('found_location').value = data.display_name.substring(0, 200);
-                    }
+                    var address = data.display_name || lat + ", " + lng;
+                    if (address.length > 100) address = address.substring(0, 100) + '…';
+                    addressField.value = address;
+                    if (statusSpan) statusSpan.innerHTML = '<span class="text-success">Location set: ' + address + '</span>';
+                    console.log("Address set:", address);
                 })
-                .catch(err => console.log("Reverse geocoding error:", err));
+                .catch(err => {
+                    console.error("Reverse geocoding error:", err);
+                    addressField.value = lat + ", " + lng;
+                    if (statusSpan) statusSpan.innerHTML = '<span class="text-warning">Could not get address. Please edit manually.</span>';
+                });
         },
         function(error) {
-            let errorMsg = "Error getting location: ";
+            var msg = "";
             switch(error.code) {
-                case error.PERMISSION_DENIED: errorMsg += "Permission denied."; break;
-                case error.POSITION_UNAVAILABLE: errorMsg += "Position unavailable."; break;
-                case error.TIMEOUT: errorMsg += "Request timed out."; break;
-                default: errorMsg += "Unknown error.";
+                case error.PERMISSION_DENIED: msg = "Permission denied."; break;
+                case error.POSITION_UNAVAILABLE: msg = "Position unavailable."; break;
+                case error.TIMEOUT: msg = "Timeout."; break;
+                default: msg = "Unknown error.";
             }
-            document.getElementById('locationStatus').innerHTML = '<span class="text-danger">' + errorMsg + '</span>';
+            if (statusSpan) statusSpan.innerHTML = '<span class="text-danger">' + msg + '</span>';
         },
         { enableHighAccuracy: true, timeout: 10000 }
     );
-}
+};
