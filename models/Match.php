@@ -1,26 +1,31 @@
 <?php
 // models/Match.php
-class MatchModel {
+class MatchModel
+{
     private $pdo;
-    
-    public function __construct($pdo) {
+
+    public function __construct($pdo)
+    {
         $this->pdo = $pdo;
     }
-    
-    public function create($lostItemId, $foundItemId, $score) {
+
+    public function create($lostItemId, $foundItemId, $score)
+    {
         // Check if match already exists
         $stmt = $this->pdo->prepare("SELECT id FROM matches WHERE lost_item_id = ? AND found_item_id = ?");
         $stmt->execute([$lostItemId, $foundItemId]);
-        if ($stmt->fetch()) return false;
-        
+        if ($stmt->fetch())
+            return false;
+
         $stmt = $this->pdo->prepare("
             INSERT INTO matches (lost_item_id, found_item_id, match_score, status, created_at)
             VALUES (?, ?, ?, 'pending', NOW())
         ");
         return $stmt->execute([$lostItemId, $foundItemId, $score]);
     }
-    
-    public function getMatchesForUser($userId) {
+
+    public function getMatchesForUser($userId)
+    {
         $stmt = $this->pdo->prepare("
             SELECT m.*, 
                    l.item_name as lost_item_name, l.description as lost_description, l.user_id as lost_user_id,
@@ -35,15 +40,27 @@ class MatchModel {
         $stmt->execute([$userId, $userId]);
         return $stmt->fetchAll();
     }
-    
-    public function updateStatus($matchId, $status, $userId) {
+
+    public function updateStatus($matchId, $status, $userId)
+    {
+        // Determine allowed current status based on desired new status
+        if ($status == 'confirmed' || $status == 'rejected') {
+            $allowedCurrent = 'pending';
+        } elseif ($status == 'resolved') {
+            $allowedCurrent = 'confirmed';
+        } else {
+            return false;
+        }
+
         $stmt = $this->pdo->prepare("
-            UPDATE matches SET status = ?, resolved_at = NOW() WHERE id = ? AND status = 'pending'
-        ");
-        $updated = $stmt->execute([$status, $matchId]);
-        
+        UPDATE matches 
+        SET status = ?, resolved_at = NOW() 
+        WHERE id = ? AND status = ?
+    ");
+        $updated = $stmt->execute([$status, $matchId, $allowedCurrent]);
+
         if ($updated && $status == 'resolved') {
-            // Also update the lost and found items status
+            // Update lost and found items status
             $match = $this->getById($matchId);
             if ($match) {
                 $this->pdo->prepare("UPDATE lost_items SET status = 'returned' WHERE id = ?")->execute([$match['lost_item_id']]);
@@ -52,8 +69,9 @@ class MatchModel {
         }
         return $updated;
     }
-    
-    public function getById($id) {
+
+    public function getById($id)
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM matches WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch();
