@@ -53,68 +53,82 @@ $resolvedMatches = $stmt->fetch()['total'];
     <!-- Personal Stats Cards -->
     <div class="row">
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-primary h-100">
-                <div class="card-body text-center">
-                    <h2><?= $lostCount ?></h2>
-                    <h6><i class="fas fa-frown"></i> Lost Items</h6>
+            <a href="<?= BASE_URL ?>index.php?page=lost_items/list" class="dashboard-card-link" aria-label="View my lost items">
+                <div class="card text-white bg-primary h-100">
+                    <div class="card-body text-center">
+                        <h2><?= $lostCount ?></h2>
+                        <h6><i class="fas fa-frown"></i> Lost Items</h6>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-success h-100">
-                <div class="card-body text-center">
-                    <h2><?= $foundCount ?></h2>
-                    <h6><i class="fas fa-smile"></i> Found Items</h6>
+            <a href="<?= BASE_URL ?>index.php?page=found_items/list" class="dashboard-card-link" aria-label="View my found items">
+                <div class="card text-white bg-success h-100">
+                    <div class="card-body text-center">
+                        <h2><?= $foundCount ?></h2>
+                        <h6><i class="fas fa-smile"></i> Found Items</h6>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-danger h-100">
-                <div class="card-body text-center">
-                    <h2><?= $incidentCount ?></h2>
-                    <h6><i class="fas fa-exclamation-triangle"></i> Incidents</h6>
+            <a href="<?= BASE_URL ?>index.php?page=incidents/list" class="dashboard-card-link" aria-label="View my incidents">
+                <div class="card text-white bg-danger h-100">
+                    <div class="card-body text-center">
+                        <h2><?= $incidentCount ?></h2>
+                        <h6><i class="fas fa-exclamation-triangle"></i> Incidents</h6>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-warning h-100">
-                <div class="card-body text-center">
-                    <h2><?= $pendingMatches ?></h2>
-                    <h6><i class="fas fa-handshake"></i> Pending Matches</h6>
-                    <small><?= $resolvedMatches ?> resolved</small>
+            <a href="<?= BASE_URL ?>index.php?page=matches/view" class="dashboard-card-link" aria-label="View my matches">
+                <div class="card text-white bg-warning h-100">
+                    <div class="card-body text-center">
+                        <h2><?= $pendingMatches ?></h2>
+                        <h6><i class="fas fa-handshake"></i> Pending Matches</h6>
+                        <small><?= $resolvedMatches ?> resolved</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
     <!-- Action Cards -->
     <div class="row">
         <div class="col-md-4 mb-3">
-            <div class="card border-primary h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-primary"><i class="fas fa-frown"></i> Report Lost Item</h5>
-                    <p class="card-text">Lost something? Let the community help you.</p>
-                    <a href="<?= BASE_URL ?>index.php?page=lost_items/report" class="btn btn-primary">Report Now</a>
+            <a href="<?= BASE_URL ?>index.php?page=lost_items/report" class="dashboard-card-link" aria-label="Report a lost item">
+                <div class="card border-primary h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary"><i class="fas fa-frown"></i> Report Lost Item</h5>
+                        <p class="card-text">Lost something? Let the community help you.</p>
+                        <span class="btn btn-primary">Report Now</span>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-4 mb-3">
-            <div class="card border-success h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-success"><i class="fas fa-smile"></i> Report Found Item</h5>
-                    <p class="card-text">Found an item? Add GPS location and help return it.</p>
-                    <a href="<?= BASE_URL ?>index.php?page=found_items/report" class="btn btn-success">Report Found</a>
+            <a href="<?= BASE_URL ?>index.php?page=found_items/report" class="dashboard-card-link" aria-label="Report a found item">
+                <div class="card border-success h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success"><i class="fas fa-smile"></i> Report Found Item</h5>
+                        <p class="card-text">Found an item? Add GPS location and help return it.</p>
+                        <span class="btn btn-success">Report Found</span>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-4 mb-3">
-            <div class="card border-warning h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-warning"><i class="fas fa-exclamation-triangle"></i> Incident Report</h5>
-                    <p class="card-text">Report any safety or security incident.</p>
-                    <a href="<?= BASE_URL ?>index.php?page=incidents/report" class="btn btn-warning">Report Incident</a>
+            <a href="<?= BASE_URL ?>index.php?page=incidents/report" class="dashboard-card-link" aria-label="Report an incident">
+                <div class="card border-warning h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-warning"><i class="fas fa-exclamation-triangle"></i> Incident Report</h5>
+                        <p class="card-text">Report any safety or security incident.</p>
+                        <span class="btn btn-warning">Report Incident</span>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 

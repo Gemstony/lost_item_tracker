@@ -246,6 +246,11 @@ if (isLoggedIn()) {
             background: #f8f9fa;
             border-color: #cbd3da;
         }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
     </style>
 </head>
 

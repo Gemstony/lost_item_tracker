@@ -48,36 +48,67 @@ $incidentTypes = $stmt->fetchAll();
     <!-- Stats Cards -->
     <div class="row">
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-primary h-100">
-                <div class="card-body">
-                    <h3><?= $stats['users'] ?></h3>
-                    <h6><i class="fas fa-users"></i> Total Users</h6>
+            <a href="<?= BASE_URL ?>index.php?page=admin/users" class="dashboard-card-link" aria-label="Manage users">
+                <div class="card text-white bg-primary h-100">
+                    <div class="card-body">
+                        <h3><?= $stats['users'] ?></h3>
+                        <h6><i class="fas fa-users"></i> Total Users</h6>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-warning h-100">
-                <div class="card-body">
-                    <h3><?= $stats['lost_items'] ?></h3>
-                    <h6><i class="fas fa-frown"></i> Lost Items</h6>
+            <a href="<?= BASE_URL ?>index.php?page=admin/all_lost_items" class="dashboard-card-link" aria-label="View all lost items">
+                <div class="card text-white bg-warning h-100">
+                    <div class="card-body">
+                        <h3><?= $stats['lost_items'] ?></h3>
+                        <h6><i class="fas fa-frown"></i> Lost Items</h6>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-success h-100">
-                <div class="card-body">
-                    <h3><?= $stats['found_items'] ?></h3>
-                    <h6><i class="fas fa-smile"></i> Found Items</h6>
+            <a href="<?= BASE_URL ?>index.php?page=admin/all_found_items" class="dashboard-card-link" aria-label="View all found items">
+                <div class="card text-white bg-success h-100">
+                    <div class="card-body">
+                        <h3><?= $stats['found_items'] ?></h3>
+                        <h6><i class="fas fa-smile"></i> Found Items</h6>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-danger h-100">
-                <div class="card-body">
-                    <h3><?= $stats['incidents'] ?></h3>
-                    <h6><i class="fas fa-exclamation-triangle"></i> Incidents</h6>
+            <a href="<?= BASE_URL ?>index.php?page=incidents/list" class="dashboard-card-link" aria-label="View all incidents">
+                <div class="card text-white bg-danger h-100">
+                    <div class="card-body">
+                        <h3><?= $stats['incidents'] ?></h3>
+                        <h6><i class="fas fa-exclamation-triangle"></i> Incidents</h6>
+                    </div>
                 </div>
-            </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <a href="<?= BASE_URL ?>index.php?page=admin/all_matches&status=pending" class="dashboard-card-link" aria-label="View pending matches">
+                <div class="card text-dark bg-warning h-100">
+                    <div class="card-body">
+                        <h3><?= $stats['pending_matches'] ?></h3>
+                        <h6><i class="fas fa-handshake"></i> Pending Matches</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 mb-3">
+            <a href="<?= BASE_URL ?>index.php?page=admin/all_matches&status=resolved" class="dashboard-card-link" aria-label="View resolved matches">
+                <div class="card text-white bg-info h-100">
+                    <div class="card-body">
+                        <h3><?= $stats['resolved_matches'] ?></h3>
+                        <h6><i class="fas fa-check-circle"></i> Resolved Matches</h6>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 
