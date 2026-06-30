@@ -60,7 +60,7 @@ require_once __DIR__ . '/../layouts/header.php';
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Found Date *</label>
-                        <input type="date" name="found_date" class="form-control" max="<?= date('Y-m-d') ?>" required>
+                        <input type="date" name="found_date" class="form-control" min="2025-01-01" max="<?= date('Y-m-d') ?>" required>
                         <div class="invalid-feedback">Enter a valid found date.</div>
                     </div>
                     <div class="col-md-12 mb-3">
