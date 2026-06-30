@@ -47,14 +47,16 @@ unset($_SESSION['error']);
                 <?php if ($error): ?>
                     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
                 <?php endif; ?>
-                <form action="index.php?page=login&action=login" method="POST">
+                <form action="index.php?page=login&action=login" method="POST" class="needs-validation" novalidate>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="email" class="form-control" id="email" name="email" maxlength="150" autocomplete="email" required>
+                        <div class="invalid-feedback">Enter a valid email address.</div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <input type="password" class="form-control" id="password" name="password" autocomplete="current-password" required>
+                        <div class="invalid-feedback">Enter your password.</div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Login</button>
                 </form>
@@ -73,5 +75,20 @@ unset($_SESSION['error']);
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    (() => {
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach((form) => {
+            form.addEventListener('submit', (event) => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            });
+        });
+    })();
+</script>
 </body>
 </html>

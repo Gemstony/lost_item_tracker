@@ -1,6 +1,7 @@
 <?php
 // controllers/FoundItemController.php
 require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/helpers.php';
 require_once __DIR__ . '/../models/FoundItem.php';
 
 $foundItemModel = new FoundItem($pdo);
@@ -11,15 +12,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get GPS coordinates from form (sent via hidden inputs from JavaScript)
     $gpsLat = !empty($_POST['gps_latitude']) ? $_POST['gps_latitude'] : null;
     $gpsLng = !empty($_POST['gps_longitude']) ? $_POST['gps_longitude'] : null;
+    $errors = array_merge(
+        validateItemReportForm($_POST, 'found_location', 'found_date'),
+        validateGpsCoordinates($gpsLat, $gpsLng),
+        validateImageUpload($_FILES['image'] ?? null)
+    );
+
+    if ($errors) {
+        $_SESSION['error'] = implode(' ', $errors);
+        redirect('index.php?page=found_items/report');
+    }
     
     $data = [
-        'item_name' => $_POST['item_name'],
-        'description' => $_POST['description'],
-        'category' => $_POST['category'],
-        'found_location' => $_POST['found_location'],
+        'item_name' => trim($_POST['item_name']),
+        'description' => trim($_POST['description'] ?? ''),
+        'category' => trim($_POST['category'] ?? ''),
+        'found_location' => trim($_POST['found_location']),
         'gps_latitude' => $gpsLat,
         'gps_longitude' => $gpsLng,
-        'found_date' => $_POST['found_date']
+        'found_date' => trim($_POST['found_date'])
     ];
     
     // Handle image upload (optional)

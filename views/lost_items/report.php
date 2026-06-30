@@ -13,11 +13,12 @@ require_once __DIR__ . '/../layouts/header.php';
                 <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
             <?php endif; ?>
             
-            <form action="<?= BASE_URL ?>index.php?page=lost_items/report" method="POST" enctype="multipart/form-data">
+            <form action="<?= BASE_URL ?>index.php?page=lost_items/report" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Item Name *</label>
-                        <input type="text" name="item_name" class="form-control" required>
+                        <input type="text" name="item_name" class="form-control" minlength="2" maxlength="100" required>
+                        <div class="invalid-feedback">Enter an item name.</div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Category</label>
@@ -34,7 +35,7 @@ require_once __DIR__ . '/../layouts/header.php';
                     </div>
                     <div class="col-md-12 mb-3">
                         <label class="form-label">Description</label>
-                        <textarea name="description" class="form-control" rows="3"></textarea>
+                        <textarea name="description" class="form-control" rows="3" maxlength="1000"></textarea>
                     </div>
                     
                     <!-- GPS Section (exactly as found item) -->
@@ -53,12 +54,14 @@ require_once __DIR__ . '/../layouts/header.php';
                     
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Lost Location (Address) *</label>
-                        <input type="text" id="lost_location" name="lost_location" class="form-control" required>
+                        <input type="text" id="lost_location" name="lost_location" class="form-control" minlength="2" maxlength="255" required>
+                        <div class="invalid-feedback">Enter where the item was lost.</div>
                         <small class="text-muted">Will be auto-filled if you use GPS.</small>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Lost Date *</label>
-                        <input type="date" name="lost_date" class="form-control" required>
+                        <input type="date" name="lost_date" class="form-control" max="<?= date('Y-m-d') ?>" required>
+                        <div class="invalid-feedback">Enter a valid lost date.</div>
                     </div>
                     <div class="col-md-12 mb-3">
                         <label class="form-label">Photo (optional)</label>

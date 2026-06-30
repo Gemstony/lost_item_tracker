@@ -25,18 +25,21 @@ $user = $stmt->fetch();
                         <div class="alert alert-danger"><?= $_SESSION['profile_error']; unset($_SESSION['profile_error']); ?></div>
                     <?php endif; ?>
 
-                    <form method="POST" action="<?= BASE_URL ?>index.php?page=profile&action=update">
+                    <form method="POST" action="<?= BASE_URL ?>index.php?page=profile&action=update" class="needs-validation" novalidate>
                         <div class="mb-3">
                             <label class="form-label">Full Name</label>
-                            <input type="text" name="fullname" class="form-control" value="<?= htmlspecialchars($user['fullname']) ?>" required>
+                            <input type="text" name="fullname" class="form-control" value="<?= htmlspecialchars($user['fullname']) ?>" minlength="2" maxlength="100" autocomplete="name" required>
+                            <div class="invalid-feedback">Enter your full name.</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user['email']) ?>" required>
+                            <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user['email']) ?>" maxlength="150" autocomplete="email" required>
+                            <div class="invalid-feedback">Enter a valid email address.</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Phone</label>
-                            <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone']) ?>">
+                            <input type="tel" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone']) ?>" inputmode="tel" autocomplete="tel" maxlength="20" pattern="^\+?[0-9\s().-]{7,20}$" title="Use 7 to 15 digits, optionally starting with +. Spaces, dashes, and parentheses are allowed.">
+                            <div class="invalid-feedback">Enter a valid phone number, for example +255712345678.</div>
                         </div>
                         <button type="submit" class="btn btn-primary">Update Profile</button>
                     </form>
@@ -48,18 +51,21 @@ $user = $stmt->fetch();
                     <h5><i class="fas fa-key"></i> Change Password</h5>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="<?= BASE_URL ?>index.php?page=profile&action=changepassword">
+                    <form method="POST" action="<?= BASE_URL ?>index.php?page=profile&action=changepassword" class="needs-validation" novalidate>
                         <div class="mb-3">
                             <label class="form-label">Current Password</label>
-                            <input type="password" name="current_password" class="form-control" required>
+                            <input type="password" name="current_password" class="form-control" autocomplete="current-password" required>
+                            <div class="invalid-feedback">Enter your current password.</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">New Password (min 6 characters)</label>
-                            <input type="password" name="new_password" class="form-control" required>
+                            <input type="password" name="new_password" class="form-control" minlength="6" autocomplete="new-password" required>
+                            <div class="invalid-feedback">Password must be at least 6 characters.</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Confirm New Password</label>
-                            <input type="password" name="confirm_password" class="form-control" required>
+                            <input type="password" name="confirm_password" class="form-control" minlength="6" autocomplete="new-password" required>
+                            <div class="invalid-feedback">Confirm your new password.</div>
                         </div>
                         <button type="submit" class="btn btn-warning">Change Password</button>
                     </form>

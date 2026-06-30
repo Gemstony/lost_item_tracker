@@ -1,6 +1,7 @@
 <?php
 // controllers/IncidentController.php
 require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/helpers.php';
 require_once __DIR__ . '/../models/Incident.php';
 require_once __DIR__ . '/../models/Notification.php';
 
@@ -11,12 +12,19 @@ $action = $_GET['action'] ?? 'report';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'create') {
     $userId = $_SESSION['user_id'];
+    $errors = validateIncidentForm($_POST);
+
+    if ($errors) {
+        $_SESSION['error'] = implode(' ', $errors);
+        redirect('index.php?page=incidents/report');
+    }
+
     $data = [
-        'title' => $_POST['title'],
-        'description' => $_POST['description'],
-        'incident_type' => $_POST['incident_type'],
-        'location' => $_POST['location'],
-        'incident_date' => $_POST['incident_date']
+        'title' => trim($_POST['title']),
+        'description' => trim($_POST['description']),
+        'incident_type' => trim($_POST['incident_type']),
+        'location' => trim($_POST['location']),
+        'incident_date' => trim($_POST['incident_date'])
     ];
     
     if ($incidentModel->create($userId, $data)) {
@@ -31,6 +39,11 @@ elseif ($action === 'update' && isAdmin()) {
     $incidentId = $_POST['incident_id'];
     $status = $_POST['status'];
     $resolutionNotes = $_POST['resolution_notes'] ?? null;
+
+    if (!in_array($status, ['reported', 'investigating', 'resolved', 'closed'], true)) {
+        $_SESSION['error'] = "Select a valid incident status.";
+        redirect('index.php?page=admin/dashboard');
+    }
     
     if ($incidentModel->updateStatus($incidentId, $status, $resolutionNotes, $_SESSION['user_id'])) {
         // Notify the user who reported the incident

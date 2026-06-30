@@ -1,6 +1,7 @@
 <?php
 // index.php - Entry point
 require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/helpers.php';
 // require_once __DIR__ . '/controllers/AuthController.php';
 
 // $auth = new AuthController($pdo);
@@ -122,21 +123,18 @@ switch ($page) {
 
         // Add user
         if ($action === 'add' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            $fullname = $_POST['fullname'];
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
-            $password = $_POST['password'];
-            $confirm = $_POST['confirm_password'];
-            $role = $_POST['role'];
+            $fullname = trim($_POST['fullname'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $phone = normalizePhone($_POST['phone'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $role = $_POST['role'] ?? '';
 
-            if ($password !== $confirm) {
-                $_SESSION['error'] = "Passwords do not match";
+            $errors = validateUserForm($_POST, true, true);
+            if ($errors) {
+                $_SESSION['error'] = implode(' ', $errors);
                 redirect('index.php?page=admin/users');
             }
-            if (strlen($password) < 6) {
-                $_SESSION['error'] = "Password must be at least 6 characters";
-                redirect('index.php?page=admin/users');
-            }
+
             // Check if email exists
             $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->execute([$email]);
@@ -158,11 +156,17 @@ switch ($page) {
         // Edit user
         elseif ($action === 'edit' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $userId = $_POST['user_id'];
-            $fullname = $_POST['fullname'];
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
-            $role = $_POST['role'];
-            $newPassword = $_POST['password'];
+            $fullname = trim($_POST['fullname'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $phone = normalizePhone($_POST['phone'] ?? '');
+            $role = $_POST['role'] ?? '';
+            $newPassword = $_POST['password'] ?? '';
+
+            $errors = validateUserForm($_POST, false, true);
+            if ($errors) {
+                $_SESSION['error'] = implode(' ', $errors);
+                redirect('index.php?page=admin/users');
+            }
 
             // Prevent editing own role to non-admin? We'll allow but caution.
             if ($userId == $_SESSION['user_id'] && $role != 'admin') {
@@ -170,14 +174,17 @@ switch ($page) {
                 redirect('index.php?page=admin/users');
             }
 
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+            $stmt->execute([$email, $userId]);
+            if ($stmt->fetch()) {
+                $_SESSION['error'] = "Email already exists";
+                redirect('index.php?page=admin/users');
+            }
+
             $updates = "fullname = ?, email = ?, phone = ?, role = ?";
             $params = [$fullname, $email, $phone, $role];
 
             if (!empty($newPassword)) {
-                if (strlen($newPassword) < 6) {
-                    $_SESSION['error'] = "Password must be at least 6 characters";
-                    redirect('index.php?page=admin/users');
-                }
                 $updates .= ", password = ?";
                 $params[] = password_hash($newPassword, PASSWORD_DEFAULT);
             }
@@ -217,9 +224,13 @@ switch ($page) {
         // Update role (inline dropdown)
         elseif ($action === 'update_role' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $userId = $_POST['user_id'];
-            $role = $_POST['role'];
+            $role = $_POST['role'] ?? '';
             if ($userId == $_SESSION['user_id']) {
                 $_SESSION['error'] = "You cannot change your own role";
+                redirect('index.php?page=admin/users');
+            }
+            if (!in_array($role, ['student', 'staff', 'admin'], true)) {
+                $_SESSION['error'] = "Select a valid user role.";
                 redirect('index.php?page=admin/users');
             }
             $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
@@ -275,10 +286,16 @@ switch ($page) {
 
         // Update profile details
         if ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            $fullname = $_POST['fullname'];
-            $email = $_POST['email'];
-            $phone = $_POST['phone'];
+            $fullname = trim($_POST['fullname'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $phone = normalizePhone($_POST['phone'] ?? '');
             $userId = $_SESSION['user_id'];
+
+            $errors = validateUserForm($_POST, false);
+            if ($errors) {
+                $_SESSION['profile_error'] = implode(' ', $errors);
+                redirect('index.php?page=profile');
+            }
 
             // Check if email is already used by another user
             $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
@@ -301,9 +318,9 @@ switch ($page) {
 
         // Change password
         elseif ($action === 'changepassword' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            $current = $_POST['current_password'];
-            $new = $_POST['new_password'];
-            $confirm = $_POST['confirm_password'];
+            $current = $_POST['current_password'] ?? '';
+            $new = $_POST['new_password'] ?? '';
+            $confirm = $_POST['confirm_password'] ?? '';
             $userId = $_SESSION['user_id'];
 
             // Verify current password

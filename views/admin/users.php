@@ -72,20 +72,23 @@ $users = $stmt->fetchAll();
                                             <h5>Edit User: <?= htmlspecialchars($user['fullname']) ?></h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <form method="POST" action="<?= BASE_URL ?>index.php?page=admin/users&action=edit">
+                                        <form method="POST" action="<?= BASE_URL ?>index.php?page=admin/users&action=edit" class="needs-validation" novalidate>
                                             <div class="modal-body">
                                                 <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
                                                 <div class="mb-2">
                                                     <label>Full Name</label>
-                                                    <input type="text" name="fullname" class="form-control" value="<?= htmlspecialchars($user['fullname']) ?>" required>
+                                                    <input type="text" name="fullname" class="form-control" value="<?= htmlspecialchars($user['fullname']) ?>" minlength="2" maxlength="100" autocomplete="name" required>
+                                                    <div class="invalid-feedback">Enter the user's full name.</div>
                                                 </div>
                                                 <div class="mb-2">
                                                     <label>Email</label>
-                                                    <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user['email']) ?>" required>
+                                                    <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user['email']) ?>" maxlength="150" autocomplete="email" required>
+                                                    <div class="invalid-feedback">Enter a valid email address.</div>
                                                 </div>
                                                 <div class="mb-2">
                                                     <label>Phone</label>
-                                                    <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone']) ?>">
+                                                    <input type="tel" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone']) ?>" inputmode="tel" autocomplete="tel" maxlength="20" pattern="^\+?[0-9\s().-]{7,20}$" title="Use 7 to 15 digits, optionally starting with +. Spaces, dashes, and parentheses are allowed.">
+                                                    <div class="invalid-feedback">Enter a valid phone number, for example +255712345678.</div>
                                                 </div>
                                                 <div class="mb-2">
                                                     <label>Role</label>
@@ -97,7 +100,8 @@ $users = $stmt->fetchAll();
                                                 </div>
                                                 <div class="mb-2">
                                                     <label>New Password (leave blank to keep current)</label>
-                                                    <input type="password" name="password" class="form-control" placeholder="Enter only if changing">
+                                                    <input type="password" name="password" class="form-control" placeholder="Enter only if changing" minlength="6" autocomplete="new-password">
+                                                    <div class="invalid-feedback">Password must be at least 6 characters.</div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -124,27 +128,32 @@ $users = $stmt->fetchAll();
                 <h5>Add New User</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= BASE_URL ?>index.php?page=admin/users&action=add">
+            <form method="POST" action="<?= BASE_URL ?>index.php?page=admin/users&action=add" class="needs-validation" novalidate>
                 <div class="modal-body">
                     <div class="mb-2">
                         <label>Full Name *</label>
-                        <input type="text" name="fullname" class="form-control" required>
+                        <input type="text" name="fullname" class="form-control" minlength="2" maxlength="100" autocomplete="name" required>
+                        <div class="invalid-feedback">Enter the user's full name.</div>
                     </div>
                     <div class="mb-2">
                         <label>Email *</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <input type="email" name="email" class="form-control" maxlength="150" autocomplete="email" required>
+                        <div class="invalid-feedback">Enter a valid email address.</div>
                     </div>
                     <div class="mb-2">
                         <label>Phone</label>
-                        <input type="text" name="phone" class="form-control">
+                        <input type="tel" name="phone" class="form-control" inputmode="tel" autocomplete="tel" maxlength="20" pattern="^\+?[0-9\s().-]{7,20}$" title="Use 7 to 15 digits, optionally starting with +. Spaces, dashes, and parentheses are allowed.">
+                        <div class="invalid-feedback">Enter a valid phone number, for example +255712345678.</div>
                     </div>
                     <div class="mb-2">
                         <label>Password *</label>
-                        <input type="password" name="password" class="form-control" required>
+                        <input type="password" name="password" class="form-control" minlength="6" autocomplete="new-password" required>
+                        <div class="invalid-feedback">Password must be at least 6 characters.</div>
                     </div>
                     <div class="mb-2">
                         <label>Confirm Password *</label>
-                        <input type="password" name="confirm_password" class="form-control" required>
+                        <input type="password" name="confirm_password" class="form-control" minlength="6" autocomplete="new-password" required>
+                        <div class="invalid-feedback">Confirm the password.</div>
                     </div>
                     <div class="mb-2">
                         <label>Role</label>

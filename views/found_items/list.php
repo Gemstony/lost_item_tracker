@@ -33,7 +33,7 @@ $items = $foundModel->getByUser($_SESSION['user_id']);
                                     <td><?= htmlspecialchars($item['found_location']) ?></td>
                                     <td>
                                         <?php if ($item['gps_latitude'] && $item['gps_longitude']): ?>
-                                            <a href="<?= BASE_URL ?>index.php?page=found_items/map&id=<?= $item['id'] ?>" class="btn btn-sm btn-info">
+                                            <a class="btn btn-sm btn-info" href="<?= BASE_URL ?>index.php?page=found_items/map&id=<?= $item['id'] ?>">
                                                 <i class="fas fa-map-marked-alt"></i> View Map
                                             </a>
                                         <?php else: ?>—<?php endif; ?>

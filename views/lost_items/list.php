@@ -48,8 +48,8 @@ $items = $lostModel->getByUser($_SESSION['user_id']);
                                     </td>
                                     <td>
                                         <?php if (!empty($item['gps_latitude']) && !empty($item['gps_longitude'])): ?>
-                                            <a href="<?= BASE_URL ?>index.php?page=lost_items/map&id=<?= $item['id'] ?>"
-                                                target="_blank" class="btn btn-sm btn-info">
+                                            <a class="btn btn-sm btn-info" href="<?= BASE_URL ?>index.php?page=lost_items/map&id=<?= $item['id'] ?>"
+                                                >
                                                 <i class="fas fa-map-marked-alt"></i> View Map
                                             </a>
                                         <?php else: ?>

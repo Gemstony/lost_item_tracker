@@ -1,6 +1,7 @@
 <?php
 // controllers/LostItemController.php
 require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/helpers.php';
 require_once __DIR__ . '/../models/LostItem.php';
 
 $lostItemModel = new LostItem($pdo);
@@ -10,12 +11,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = $_SESSION['user_id'];
     $gpsLat = !empty($_POST['gps_latitude']) ? $_POST['gps_latitude'] : null;
     $gpsLng = !empty($_POST['gps_longitude']) ? $_POST['gps_longitude'] : null;
+    $errors = array_merge(
+        validateItemReportForm($_POST, 'lost_location', 'lost_date'),
+        validateGpsCoordinates($gpsLat, $gpsLng),
+        validateImageUpload($_FILES['image'] ?? null)
+    );
+
+    if ($errors) {
+        $_SESSION['error'] = implode(' ', $errors);
+        redirect('index.php?page=lost_items/report');
+    }
+
     $data = [
-        'item_name' => $_POST['item_name'],
-        'description' => $_POST['description'],
-        'category' => $_POST['category'],
-        'lost_location' => $_POST['lost_location'],
-        'lost_date' => $_POST['lost_date']
+        'item_name' => trim($_POST['item_name']),
+        'description' => trim($_POST['description'] ?? ''),
+        'category' => trim($_POST['category'] ?? ''),
+        'lost_location' => trim($_POST['lost_location']),
+        'lost_date' => trim($_POST['lost_date'])
     ];
 
     // Handle image upload

@@ -1,6 +1,7 @@
 <?php
 // controllers/AuthController.php
 require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../includes/helpers.php';
 
 class AuthController
 {
@@ -60,8 +61,14 @@ $auth = new AuthController($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'login') {
-        $email = $_POST['email'] ?? '';
+        $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
+
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $password === '') {
+            $_SESSION['error'] = "Enter a valid email and password.";
+            redirect('index.php?page=login');
+        }
+
         if ($auth->login($email, $password)) {
             if ($_SESSION['role'] === 'admin') {
                 redirect('index.php?page=admin/dashboard');
@@ -73,20 +80,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('index.php?page=login');
         }
     } elseif ($action === 'register') {
-        $fullname = $_POST['fullname'] ?? '';
-        $email = $_POST['email'] ?? '';
+        $fullname = trim($_POST['fullname'] ?? '');
+        $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
-        $confirm = $_POST['confirm_password'] ?? '';
-        $phone = $_POST['phone'] ?? '';
+        $phone = normalizePhone($_POST['phone'] ?? '');
 
-        if ($password !== $confirm) {
-            $_SESSION['errors'] = ["Passwords do not match"];
+        $errors = validateUserForm($_POST);
+
+        if ($errors) {
+            $_SESSION['errors'] = $errors;
+            $_SESSION['old'] = [
+                'fullname' => $fullname,
+                'email' => $email,
+                'phone' => $_POST['phone'] ?? '',
+            ];
             redirect('index.php?page=register');
         }
-        if (strlen($password) < 6) {
-            $_SESSION['errors'] = ["Password must be at least 6 characters"];
+
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->fetch()) {
+            $_SESSION['errors'] = ["Email already exists."];
+            $_SESSION['old'] = [
+                'fullname' => $fullname,
+                'email' => $email,
+                'phone' => $_POST['phone'] ?? '',
+            ];
             redirect('index.php?page=register');
         }
+
         if ($auth->register($fullname, $email, $password, $phone)) {
             $_SESSION['success'] = "Registration successful. Please login.";
             redirect('index.php?page=login');

@@ -109,9 +109,13 @@ $baseUrl = BASE_URL . "index.php?page=admin/all_found_items&status=$status&categ
                                     <td><?= htmlspecialchars($item['fullname']) ?></td>
                                     <td><?php if ($item['gps_latitude']): ?><a
                                                 href="<?= BASE_URL ?>index.php?page=found_items/map&id=<?= $item['id'] ?>"
-                                                target="_blank">Map</a><?php else: ?>—<?php endif; ?></td>
-                                    <td><?php if ($item['image_path']): ?><a href="<?= BASE_URL . $item['image_path'] ?>"
-                                                target="_blank">View</a><?php else: ?>—<?php endif; ?></td>
+                                                 class="btn btn-sm btn-info">
+                                                <i class="fas fa-map-marked-alt"></i> Map
+                                            </a><?php else: ?>—<?php endif; ?></td>
+                                    <td><?php if ($item['image_path']): ?><a class="btn btn-sm btn-primary" href="<?= BASE_URL . $item['image_path'] ?>"
+                                                >
+                                                <i class="fas fa-eye"></i> View
+                                            </a><?php else: ?>—<?php endif; ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

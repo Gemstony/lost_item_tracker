@@ -151,13 +151,17 @@ $baseUrl = BASE_URL . "index.php?page=admin/all_lost_items&status=" . urlencode(
                                     <td><?= $item['created_at'] ?></td>
                                     <td>
                                         <?php if ($item['gps_latitude'] && $item['gps_longitude']): ?>
-                                            <a href="<?= BASE_URL ?>index.php?page=lost_items/map&id=<?= $item['id'] ?>"
-                                                target="_blank">Map</a>
+                                            <a class="btn btn-sm btn-info" href="<?= BASE_URL ?>index.php?page=lost_items/map&id=<?= $item['id'] ?>"
+                                                >
+                                                <i class="fas fa-map-marked-alt"></i> Map
+                                            </a>
                                         <?php else: ?>—<?php endif; ?>
                                     </td>
                                     <td>
                                         <?php if ($item['image_path']): ?>
-                                            <a href="<?= BASE_URL . $item['image_path'] ?>" target="_blank">View</a>
+                                            <a class="btn btn-sm btn-primary" href="<?= BASE_URL . $item['image_path'] ?>" target="_blank">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
                                         <?php else: ?>—<?php endif; ?>
                                     </td>
                                 </tr>
