@@ -21,7 +21,12 @@ switch ($page) {
     case 'logout':
         require_once __DIR__ . '/controllers/AuthController.php';
         break;
-
+    case 'verify':
+        require_once __DIR__ . '/controllers/AuthController.php';
+        break;
+    case 'resend_verification':
+        require_once __DIR__ . '/controllers/AuthController.php';
+        break;
     // Protected pages (require login)
     case 'dashboard':
         if (!isLoggedIn())

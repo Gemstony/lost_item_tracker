@@ -242,4 +242,5 @@ function paginate($currentPage, $totalRecords, $recordsPerPage, $baseUrl)
     $html .= '</ul></nav>';
     return $html;
 }
+
 ?>

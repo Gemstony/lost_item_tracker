@@ -150,5 +150,16 @@ $resolvedMatches = $stmt->fetch()['total'];
         </div>
     </div>
 </div>
-
+<?php if (isset($_SESSION['swal'])): ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            title: '<?= $_SESSION['swal']['title'] ?>',
+            text: '<?= $_SESSION['swal']['text'] ?>',
+            icon: '<?= $_SESSION['swal']['icon'] ?>',
+            confirmButtonText: 'OK'
+        });
+    </script>
+    <?php unset($_SESSION['swal']); ?>
+<?php endif; ?>
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
